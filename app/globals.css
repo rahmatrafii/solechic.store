@@ -1,0 +1,41 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap");
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: "Montserrat", sans-serif;
+}
+.flex-center {
+  @apply flex justify-center items-center;
+}
+.card-shadow {
+  box-shadow: 2px 2px 2px 0px rgba(0, 0, 0, 0.25);
+}
+.card-linear {
+  background: linear-gradient(
+    266deg,
+    #2730ff 0.58%,
+    #09ffea 49.28%,
+    #3f0 96.98%
+  );
+}
+.banner-style {
+  @apply max-w-full h-[300px] object-cover md:h-[350px] xl:h-[400px];
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 7px;
+  height: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  @apply rounded-full bg-white;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  @apply rounded-full bg-slate-500;
+}
+.shadow-up {
+  box-shadow: 0px -0.5px 2px rgba(0, 0, 0, 0.5);
+}
