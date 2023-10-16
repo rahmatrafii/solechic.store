@@ -1,15 +1,11 @@
-import { NextResponse } from "next/server";
-import { NextRequestWithAuth } from "next-auth/middleware";
-export function middleware(request: NextRequestWithAuth) {
-  const cookie = request.cookies.get("next-auth.session-token");
-  if (request.nextUrl.pathname.startsWith("/cart")) {
-    if (!cookie) {
-      return NextResponse.redirect(new URL("/auth/signin", request.url));
-    }
+import { NextRequest, NextResponse } from "next/server";
+import { getToken } from "next-auth/jwt";
+export default async function middleware(req: NextRequest) {
+  const token = await getToken({ req });
+  if (req.nextUrl.pathname.startsWith("/cart") && !token) {
+    return NextResponse.redirect(new URL("/auth/signin", req.url));
   }
-  if (request.nextUrl.pathname.startsWith("/auth")) {
-    if (cookie) {
-      return NextResponse.redirect(new URL("/", request.url));
-    }
+  if (req.nextUrl.pathname.startsWith("/auth") && token) {
+    return NextResponse.redirect(new URL("/", req.url));
   }
 }

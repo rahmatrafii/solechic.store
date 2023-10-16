@@ -5,12 +5,10 @@ const Banner = () => {
   return (
     <div className="max-w-full  mb-12 ">
       <div className="w-full flex justify-center">
-        <Image
+        <img
           src={`/static/image/${banner[0]}`}
           alt={banner[0]}
           className={`banner-style hidden lg:block`}
-          width={200}
-          height={200}
         />
         <Image
           src={`/static/image/${banner[1]}`}

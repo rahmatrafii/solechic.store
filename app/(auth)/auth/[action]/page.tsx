@@ -22,7 +22,7 @@ const Auth = ({
   return (
     <>
       <img
-        src="/static/image/background.svg"
+        src="/static/image/background.jpg"
         alt="background"
         className="h-full w-full object-cover left-0  bottom-0 absolute z-[1]"
       />

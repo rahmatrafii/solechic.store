@@ -145,9 +145,9 @@ const DetailProductInfo = ({ product }: { product: ProductType }) => {
       <h2 className="text-3xl font-semibold ">{product.name}</h2>
       <h4 className="mb-3">{product.category}</h4>
       <p className="text-2xl mb-3">$ {product.price}</p>
-      <p className="mb-3">{product.description}</p>
-      <p className="text-lg mb-3"> Colour Shown: {product.colour}</p>
-      <p className="text-lg mb-10">
+      <p className="mb-3 md:text-lg text-sm">{product.description}</p>
+      <p className="md:text-lg text-sm mb-3"> Colour Shown: {product.colour}</p>
+      <p className="md:text-lg text-sm mb-10">
         {" "}
         Country/Region of Origin: {product.origin}
       </p>
@@ -173,7 +173,9 @@ const DetailProductInfo = ({ product }: { product: ProductType }) => {
         <div className="flex gap-3">
           {GenerateRateing(product?.rate, 30, 30)}
         </div>
-        <p className="text-lg whitespace-nowrap md:text-xl font-light">{product?.rate} Stars</p>
+        <p className="text-lg whitespace-nowrap md:text-xl font-light">
+          {product?.rate} Stars
+        </p>
       </div>
       <Alert
         isShow={feedback.status}

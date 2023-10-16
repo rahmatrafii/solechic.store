@@ -34,7 +34,7 @@ const page = async ({ params }: { params: { slug: string } }) => {
   const product: ProductType = await getProduct(params.slug);
   const products = await getProducts();
   return (
-    <section className="py-32 w-full ">
+    <section className="py-20 lg:py-32 w-full ">
       <div className="w-full lg:flex lg:gap-5 mb-40">
         <div className="w-full lg:w-1/2 mb-10">
           <DetailProductImage images={product.image} />
