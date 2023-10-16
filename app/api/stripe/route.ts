@@ -41,8 +41,8 @@ export async function POST(req: Request) {
           quantity: item.quantity,
         };
       }),
-      success_url: `http://localhost:3000/success/${process.env.NEXT_LOCAL_RANDOM_STRING}`,
-      cancel_url: `http://localhost:3000/`,
+      success_url: `https://solechic.vercel.app/success/${process.env.NEXT_LOCAL_RANDOM_STRING}`,
+      cancel_url: `https://solechic.vercel.app/`,
     };
     const session: Stripe.Checkout.Session =
       await stripe.checkout.sessions.create(params);

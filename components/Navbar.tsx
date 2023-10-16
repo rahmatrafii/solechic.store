@@ -27,7 +27,7 @@ const Navbar = () => {
           </Link>
           {!data && status === "unauthenticated" ? (
             <button
-              className=" rounded-full whitespace-nowrap text-xs py-0.5 px-1 border lg:border-[2px] md:px-3 md:py-1 md:text-lg border-black font-medium"
+              className=" rounded-full whitespace-nowrap text-xs py-1 px-2 border lg:border-[2px] md:px-3 md:py-1 md:text-lg border-black font-medium"
               onClick={() => signIn()}
             >
               sign in

@@ -22,3 +22,7 @@ export async function getProduct(slug: string) {
   const query = `*[_type == "product" && slug.current == '${slug}'][0]`;
   return client.fetch(query);
 }
+
+export async function getBanner() {
+  return await client.fetch('*[_type == "banner"]');
+}

@@ -1,6 +1,7 @@
 import { defineConfig } from "sanity";
 import { deskTool } from "sanity/desk";
 import product from "./sanity/schemas/product";
+import banner from "./sanity/schemas/Banner";
 const config = defineConfig({
   title: "e-comerce",
   apiVersion: "2023-10-7",
@@ -8,6 +9,6 @@ const config = defineConfig({
   dataset: "production",
   basePath: "/admin",
   plugins: [deskTool()],
-  schema: { types: [product] },
+  schema: { types: [product, banner] },
 });
 export default config;

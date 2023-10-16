@@ -2,15 +2,15 @@ import React from "react";
 import CardProduct from "@/components/CardProduct";
 import Link from "next/link";
 import Banner from "@/components/Banner";
-import { getProducts } from "@/sanity/sanity-utils";
+import { getBanner, getProducts } from "@/sanity/sanity-utils";
 import { ProductType } from "@/types";
 export default async function Home() {
-  const products = await getProducts();
+  const [products, banners] = await Promise.all([getProducts(), getBanner()]);
 
   return (
     <div className="w-full py-20">
       <section>
-        <Banner />
+        <Banner banners={banners} />
         <h1 className="font-extrabold text-[20px] sm:text-[34px] md:text-[38px] lg:text-[45px] xl:text-[50px]  text-center">
           Step into Style with SoleChic.store – Where Fashion Meets Comfort.
         </h1>

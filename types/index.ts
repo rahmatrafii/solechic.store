@@ -23,6 +23,11 @@ export interface ProductType {
   slug: { current: string; _type: string };
 }
 
+export interface BannerType {
+  image: ImageType;
+  name: string;
+}
+
 export interface sessionType {
   data: {
     user: { email: string; username: string };
