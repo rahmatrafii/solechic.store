@@ -31,8 +31,8 @@ const Recommen = ({ products }: { products: any }) => {
         <SwiperButton />
         <div>
           {products.slice(0, 10).map((product: ProductType) => (
-            <SwiperSlide>
-              <CardProduct key={product._id} product={product} />
+            <SwiperSlide key={product._id}>
+              <CardProduct product={product} />
             </SwiperSlide>
           ))}
         </div>

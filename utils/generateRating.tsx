@@ -8,13 +8,20 @@ export const GenerateRateing = (
   const stars = [];
   for (let j = 1; j <= Math.floor(rating); j++) {
     stars.push(
-      <Image src={`/static/icon/star.svg`} width={w} height={h} alt="star" />
+      <Image
+        key={`star-${j}`}
+        src={`/static/icon/star.svg`}
+        width={w}
+        height={h}
+        alt="star"
+      />
     );
   }
 
   if (String(rating).includes(".")) {
     stars.push(
       <Image
+        key={`half-star`}
         src={`/static/icon/half-star.svg`}
         width={w}
         height={h}
@@ -27,6 +34,7 @@ export const GenerateRateing = (
     for (let i = 1; i <= 5 - Math.ceil(rating); i++) {
       stars.push(
         <Image
+          key={`empety-star-${i}`}
           src={`/static/icon/empty-star.svg`}
           width={20}
           height={20}

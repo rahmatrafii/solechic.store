@@ -17,6 +17,7 @@ const SelectSize = ({
     <div className="grid grid-cols-3 gap-2 mb-10">
       {allSize.map((number: number) => (
         <div
+          key={number}
           onClick={() => handleSize(number)}
           className={` ${
             number === size ? "bg-black text-white" : "text-black bg-white"

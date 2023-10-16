@@ -12,13 +12,17 @@ const Footer = () => {
         <div className="mb-[25px]">
           <h4 className="mb-2 text-base">GET HELP</h4>
           {footer.getHelp.map((item: string) => (
-            <p className="text-sm mb-[2px]">{item}</p>
+            <p key={item} className="text-sm mb-[2px]">
+              {item}
+            </p>
           ))}
         </div>
         <div className="mb-[25px]">
           <h4 className="mb-2 text-base">ABOUT</h4>
           {footer.about.map((item: string) => (
-            <p className="text-sm mb-[2px]">{item}</p>
+            <p key={item} className="text-sm mb-[2px]">
+              {item}
+            </p>
           ))}
         </div>
         <div className="flex gap-5 md:flex-col">

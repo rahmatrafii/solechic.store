@@ -8,6 +8,7 @@ const stripe = new Stripe(process.env.NEXT_LOCAL_STRIPE_SECRET_KEY!, {
 
 export async function POST(req: Request) {
   const data = await req.json();
+
   try {
     const params: Stripe.Checkout.SessionCreateParams = {
       submit_type: "pay",

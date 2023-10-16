@@ -18,6 +18,7 @@ const DetailProductImage = ({ images }: { images: ImageType[] }) => {
         <div className="flex w-full overflow-x-auto gap-4 lg:flex-col lg mr-5 p-2 lg:p-0 custom-scrollbar">
           {images?.map((image: ImageType, i: number) => (
             <img
+              key={image._key}
               src={urlFor(image)}
               onMouseEnter={() => setIndex(i)}
               alt="Image"
