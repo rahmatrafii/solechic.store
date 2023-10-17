@@ -1,35 +1,42 @@
 "use client";
-
 import CardCart from "@/components/CardCart";
 import Summary from "@/components/Summary";
 import { CartProducType } from "@/types";
 import { useEffect, useState } from "react";
 import CardCartLoading from "./loading/CardCartLoading";
 import Link from "next/link";
-import { collection, onSnapshot, query } from "firebase/firestore";
+import { collection, onSnapshot, query, where } from "firebase/firestore";
 import firestore from "@/lib/firebase/init";
+import { useSession } from "next-auth/react";
+
 const CartContent = () => {
+  const { data, status } = useSession();
   const [products, setProducts] = useState<CartProducType[]>([]);
   const [isEmpety, setIsEmpety] = useState("wait");
 
   useEffect(() => {
-    setIsEmpety("wait");
-    const q = query(collection(firestore, "cart"));
-    const unsubscribe = onSnapshot(q, (querySnapshot) => {
-      let newItems: any = [];
-      querySnapshot.forEach((doc) => {
-        newItems.push({ ...doc.data(), id: doc.id });
-      });
+    if (data?.user && status === "authenticated") {
+      setIsEmpety("wait");
+      const q = query(
+        collection(firestore, "cart"),
+        where("user_email", "==", data?.user?.email)
+      );
+      const unsubscribe = onSnapshot(q, (querySnapshot) => {
+        let newItems: any = [];
+        querySnapshot.forEach((doc) => {
+          newItems.push({ ...doc.data(), id: doc.id });
+        });
 
-      if (newItems.length > 0) {
-        setProducts(newItems);
-        setIsEmpety("false");
-      } else {
-        setProducts([]);
-        setIsEmpety("true");
-      }
-      return () => unsubscribe();
-    });
+        if (newItems.length > 0) {
+          setProducts(newItems);
+          setIsEmpety("false");
+        } else {
+          setProducts([]);
+          setIsEmpety("true");
+        }
+        return () => unsubscribe();
+      });
+    }
   }, []);
   return (
     <div className="lg:flex gap-10  py-4">

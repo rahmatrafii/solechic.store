@@ -5,7 +5,7 @@ import React, { useEffect, useState } from "react";
 import { PiShoppingCartFill } from "react-icons/pi";
 import { signIn, useSession } from "next-auth/react";
 import ProfileIcon from "./ProfileIcon";
-import { collection, onSnapshot, query } from "firebase/firestore";
+import { collection, onSnapshot, query, where } from "firebase/firestore";
 import firestore from "@/lib/firebase/init";
 
 const Navbar = () => {
@@ -14,21 +14,25 @@ const Navbar = () => {
   const [quantity, setQuantity] = useState(0);
 
   useEffect(() => {
-    const q = query(collection(firestore, "cart"));
-    const unsubscribe = onSnapshot(q, (querySnapshot) => {
-      let newItems: any = [];
-      querySnapshot.forEach((doc) => {
-        console.log({ ...doc.data() });
-        newItems.push({ ...doc.data(), id: doc.id });
-      });
-      setItems(newItems);
+    if (data?.user && status === "authenticated") {
+      const q = query(
+        collection(firestore, "cart"),
+        where("user_email", "==", data?.user?.email)
+      );
+      const unsubscribe = onSnapshot(q, (querySnapshot) => {
+        let newItems: any = [];
+        querySnapshot.forEach((doc) => {
+          newItems.push({ ...doc.data(), id: doc.id });
+        });
+        setItems(newItems);
 
-      const qty = newItems.reduce((acc: number, item: any) => {
-        return acc + item.quantity;
-      }, 0);
-      setQuantity(qty);
-      return () => unsubscribe();
-    });
+        const qty = newItems.reduce((acc: number, item: any) => {
+          return acc + item.quantity;
+        }, 0);
+        setQuantity(qty);
+        return () => unsubscribe();
+      });
+    }
   }, []);
 
   return (

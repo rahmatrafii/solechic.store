@@ -28,11 +28,8 @@ const Summary = ({ products }: { products: CartProducType[] }) => {
     setTotal(newTotal);
   }
   useEffect(() => {
-    console.log("hai");
-
     generateSummary();
   }, [products]);
-  console.log(products);
   const handleCheckout = async () => {
     const res = await fetch("/api/stripe", {
       method: "POST",
