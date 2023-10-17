@@ -6,22 +6,30 @@ import { CartProducType } from "@/types";
 import { useEffect, useState } from "react";
 import CardCartLoading from "./loading/CardCartLoading";
 import Link from "next/link";
-
+import { collection, onSnapshot, query } from "firebase/firestore";
+import firestore from "@/lib/firebase/init";
 const CartContent = () => {
   const [products, setProducts] = useState<CartProducType[]>([]);
   const [isEmpety, setIsEmpety] = useState("wait");
-  async function getProducts() {
-    const products = await fetch(`/api/products/`);
-    const data = await products?.json();
-    if (data.res.length > 0) {
-      setProducts(data.res);
-      setIsEmpety("false");
-    } else {
-      setIsEmpety("true");
-    }
-  }
+
   useEffect(() => {
-    getProducts();
+    setIsEmpety("wait");
+    const q = query(collection(firestore, "cart"));
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      let newItems: any = [];
+      querySnapshot.forEach((doc) => {
+        newItems.push({ ...doc.data(), id: doc.id });
+      });
+
+      if (newItems.length > 0) {
+        setProducts(newItems);
+        setIsEmpety("false");
+      } else {
+        setProducts([]);
+        setIsEmpety("true");
+      }
+      return () => unsubscribe();
+    });
   }, []);
   return (
     <div className="lg:flex gap-10  py-4">

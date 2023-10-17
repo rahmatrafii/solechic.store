@@ -5,7 +5,13 @@ import React, { useEffect } from "react";
 import { useSession } from "next-auth/react";
 
 import { runFireworks } from "@/utils/confetti";
+import { useRouter } from "next/navigation";
+const key = process.env.NEXT_LOCAL_RANDOM_STRING;
 const page = ({ params }: { params: { code: string } }) => {
+  const { back } = useRouter();
+  if (key != params.code) {
+    back();
+  }
   const { data: session } = useSession();
 
   async function clearCart() {

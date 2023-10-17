@@ -11,11 +11,11 @@ import {
   serverTimestamp,
   deleteDoc,
   writeBatch,
+  onSnapshot,
 } from "firebase/firestore";
-import app from "./init";
+import firestore from "./init";
 import { getServerSession } from "next-auth";
 import { CartProducType } from "@/types";
-const firestore = getFirestore(app);
 
 export async function getDataCart(_id: string) {
   const q = query(collection(firestore, "cart"), where("_id", "==", _id));
@@ -108,7 +108,6 @@ export async function deleteProduct({
 
   return result;
 }
-
 export async function clearCart({ email }: { email: string }) {
   const q = query(
     collection(firestore, "cart"),

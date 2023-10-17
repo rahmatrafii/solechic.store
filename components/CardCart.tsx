@@ -28,8 +28,6 @@ const CardCart = ({ product }: { product: CartProducType }) => {
     } catch (error) {
       console.log(error);
     }
-    router.refresh();
-    window.location.reload();
   };
   const handleChangeQuantity = async (e: ChangeEvent<HTMLSelectElement>) => {
     setQuantity(Number(e.target.value));
@@ -49,8 +47,6 @@ const CardCart = ({ product }: { product: CartProducType }) => {
     } catch (error) {
       console.log(error);
     }
-    router.refresh();
-    window.location.reload();
   };
   const handleDelete = async () => {
     const data = {
@@ -69,7 +65,6 @@ const CardCart = ({ product }: { product: CartProducType }) => {
     } catch (err) {
       console.log(err);
     }
-    window.location.reload();
   };
 
   return (

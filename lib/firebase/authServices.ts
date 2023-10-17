@@ -3,16 +3,12 @@ import {
   collection,
   doc,
   getDocs,
-  getFirestore,
   query,
   updateDoc,
   where,
-  orderBy,
 } from "firebase/firestore";
-import app from "./init";
+import firestore from "./init";
 import bcrypt from "bcrypt";
-
-const firestore = getFirestore(app);
 
 const getUser = async (email: any) => {
   const q = query(collection(firestore, "users"), where("email", "==", email));

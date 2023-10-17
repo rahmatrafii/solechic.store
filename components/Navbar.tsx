@@ -1,12 +1,36 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { PiShoppingCartFill } from "react-icons/pi";
 import { signIn, useSession } from "next-auth/react";
 import ProfileIcon from "./ProfileIcon";
+import { collection, onSnapshot, query } from "firebase/firestore";
+import firestore from "@/lib/firebase/init";
+
 const Navbar = () => {
   const { data, status } = useSession();
+  const [items, setItems] = useState([]);
+  const [quantity, setQuantity] = useState(0);
+
+  useEffect(() => {
+    const q = query(collection(firestore, "cart"));
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      let newItems: any = [];
+      querySnapshot.forEach((doc) => {
+        console.log({ ...doc.data() });
+        newItems.push({ ...doc.data(), id: doc.id });
+      });
+      setItems(newItems);
+
+      const qty = newItems.reduce((acc: number, item: any) => {
+        return acc + item.quantity;
+      }, 0);
+      setQuantity(qty);
+      return () => unsubscribe();
+    });
+  }, []);
+
   return (
     <nav className="fixed w-full left-0 top-0 px-5 py-3 lg:px-14 md:py-5 bg-white z-[50]">
       <div className="flex w-full items-center justify-between">
@@ -22,8 +46,13 @@ const Navbar = () => {
           SoleChic.store
         </Link>
         <div className="flex gap-x-4 md:gap-x-8 items-center">
-          <Link href="/cart" className="text-[25px]">
+          <Link href="/cart" className="text-[25px] relative">
             <PiShoppingCartFill />
+            {quantity > 0 ? (
+              <p className=" absolute top-[-5px] right-[-5px] w-[18px] h-[18px] flex-center shadow-md text-xs rounded-full bg-white text-black ">
+                {quantity}
+              </p>
+            ) : null}
           </Link>
           {!data && status === "unauthenticated" ? (
             <button
