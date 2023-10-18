@@ -32,7 +32,9 @@ const SelectSize = ({
           {number}
         </div>
       ))}
-      {error.length > 0 && <p className="text-red-500">{error}</p>}
+      {error.length > 0 && (
+        <p className="text-red-500 whitespace-nowrap">{error}</p>
+      )}
     </div>
   );
 };

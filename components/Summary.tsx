@@ -67,6 +67,7 @@ const Summary = ({ products }: { products: CartProducType[] }) => {
       </div>
       <div className="fixed z-[2] lg:relative w-full left-0 bottom-0 h-[100px] py-4 bg-white px-1 shadow-up lg:shadow-none lg:border-none">
         <button
+          type="button"
           onClick={handleCheckout}
           className="w-full py-3 text-white bg-black rounded-full"
         >
