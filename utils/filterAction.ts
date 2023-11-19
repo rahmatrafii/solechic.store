@@ -49,19 +49,17 @@ export function ganerateRatingFilter(obj: {
   value: string;
 }) {
   let string = "";
-  console.log(obj.param);
   switch (obj.param) {
     case "higher":
-      string = `rate >= ${obj.value}`;
+      string = `rate >= ${Number(obj.value) + 0.1}`;
       break;
     case "lower":
-      string = `rate <= ${obj.value}`;
+      string = `rate <= ${Number(obj.value) - 0.1}`;
       break;
     case "equal to":
       string = `rate == ${obj.value}`;
       break;
   }
-  console.log(string);
   return string;
 }
 export function ganerateCountryOfOriginFilter(obj: {

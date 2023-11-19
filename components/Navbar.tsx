@@ -59,6 +59,7 @@ const Navbar = () => {
             {navLink.map((value) => {
               return (
                 <Link
+                  key={value.title}
                   href={value.src}
                   className={`${
                     pathName.split("/")[2] == value.title

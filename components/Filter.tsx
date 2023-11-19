@@ -1,5 +1,5 @@
 "use client";
-import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { IoFilter } from "react-icons/io5";
 import { LiaTimesSolid } from "react-icons/lia";
 import AddFilter from "./AddFilter";
@@ -9,13 +9,7 @@ import PriceFilter from "./PriceFilter";
 import RatingFilter from "./RatingFilter";
 import CountryOfOriginFilter from "./CountryOfOriginFilter";
 import DeleteGroup from "./DeleteGroup";
-import { FilterGroup, ProductType } from "@/types";
-import {
-  getProductsFiltered,
-  getProductsGroupFiltered,
-} from "@/sanity/sanity-utils";
-import { useRouter, useSearchParams } from "next/navigation";
-
+import { FilterGroup } from "@/types";
 import { usePathname } from "next/navigation";
 import {
   ganerateCountryOfOriginFilter,
@@ -24,15 +18,10 @@ import {
   ganerateRatingFilter,
 } from "@/utils/filterAction";
 
-type Props = {
-  setProductsSelected: Dispatch<SetStateAction<ProductType[]>>;
-};
-const Filter = ({ setProductsSelected }: Props) => {
+const Filter = () => {
   const pathName = usePathname();
   const [filterActive, setFilterActive] = useState(false);
   const [filterValue, setfilterValue] = useState<FilterGroup[]>([[]]);
-  console.log(filterValue);
-  const router = useRouter();
 
   const handleAddFilter = (group: number, type: string, initial?: string) => {
     if (type !== "price") {
@@ -81,10 +70,6 @@ const Filter = ({ setProductsSelected }: Props) => {
       filterValue.length === 1 ||
       (filterValue.length === 2 && !filterValue[filterValue.length - 1][0])
     ) {
-      // const res = await getProductsFiltered(
-      //   pathName.split("/")[2],
-      //   filterValue[0]
-      // );
       let string: string[] = [];
       filterValue[0].map((value) => {
         if (value.type == "name" && value.value) {
@@ -113,23 +98,10 @@ const Filter = ({ setProductsSelected }: Props) => {
           string.push(`${res}`);
         }
       });
-      // const url = `http://localhost:3000/products/all?filters=${string}`;
-      // window.location.href = url;
-
-      // const query = `${
-      //   pathName.split("/")[2] !== "all"
-      //     `&& category match "${pathName.split("/")[2]}*"`
-      //     : ""
-      // }  ${string}]`;
-      // console.log(string);
-
-      console.log(string);
 
       if (pathName.split("/")[2] !== "all" && string.length > 0) {
         string.push(`category match "${pathName.split("/")[2]}*"`);
       }
-
-      console.log(string);
 
       const searchParams = new URLSearchParams(window.location.search);
       localStorage.setItem(
@@ -145,10 +117,6 @@ const Filter = ({ setProductsSelected }: Props) => {
       window.location.href = newPathName;
       return false;
     } else if (filterValue.length > 1) {
-      // const res = await getProductsGroupFiltered(
-      //   pathName.split("/")[2],
-      //   filterValue
-      // );
       let group: any[] = [];
       filterValue.map((item) => {
         let string = "";
@@ -189,11 +157,6 @@ const Filter = ({ setProductsSelected }: Props) => {
         );
       });
 
-      // const url = `http://localhost:3000/products/all?filters=${group.join(
-      //   " || "
-      // )}`;
-      // window.location.href = url;
-
       const searchParams = new URLSearchParams(window.location.search);
 
       searchParams.set("filters", group.join(" || "));
@@ -206,22 +169,15 @@ const Filter = ({ setProductsSelected }: Props) => {
         JSON.stringify(filterValue)
       );
 
-      // router.push(newPathName);
-
       window.location.href = newPathName;
       return false;
     }
   };
 
   useEffect(() => {
-    const url = window.location.href;
-
-    const string = url.split("?filters=")[1];
-    console.log(decodeURIComponent(string));
-
     const fil = localStorage.getItem(`${pathName.split("/")[2]}-filter`);
     const ter = JSON.parse(fil as string);
-    console.log(ter);
+
     if (ter) {
       setfilterValue(ter);
     }

@@ -12,9 +12,6 @@ export const metadata: Metadata = {
 };
 
 const AllPage = async ({ searchParams }: any) => {
-  console.log(searchParams);
-  // const url = location.href;
-  // const query = decodeURIComponent(url.split("?filters=")[1]);
   let products;
   if (!searchParams.filters || searchParams.filters == "") {
     products = await getProducts("all");
