@@ -51,7 +51,7 @@ const CartContent = () => {
               Oopss your trolley is empty, let's go shopping now
             </p>
             <Link
-              href="/products"
+              href="/products/all"
               className="px-3 py-2 text-white shadow-sm bg-black rounded-md"
             >
               Shop Now
