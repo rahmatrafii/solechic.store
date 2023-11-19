@@ -63,7 +63,7 @@ const Filter = () => {
     setfilterValue((prev) => prev.filter((item, i) => i !== indexToRemove));
   };
 
-  const handleDone = async () => {
+  const handleSave = async () => {
     setFilterActive(false);
 
     if (
@@ -266,9 +266,9 @@ const Filter = () => {
           </button>
           <button
             className="md:py-2 md:px-4 py-1 px-2 text-xs rounded-md bg-black text-white "
-            onClick={handleDone}
+            onClick={handleSave}
           >
-            Done
+            Save
           </button>
         </div>
       </div>
