@@ -3,7 +3,6 @@ import DetailProductInfo from "@/components/DetailProductInfo";
 import Recommen from "@/components/Recommen";
 import { client, getProduct, getProducts } from "@/sanity/sanity-utils";
 import { ProductType } from "@/types";
-import type { Metadata } from "next";
 
 export async function generateMetadata({
   params,

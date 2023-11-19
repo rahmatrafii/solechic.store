@@ -15,7 +15,7 @@ const ProfileIcon = () => {
           }`}
         >
           {" "}
-          {name.length > 5 ? `${name.slice(0, 5)}...` : name}
+          {name.length > 12 ? `${name.slice(0, 12)}...` : name}
         </p>
         {image && (
           <Image

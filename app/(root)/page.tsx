@@ -5,7 +5,10 @@ import Banner from "@/components/Banner";
 import { getBanner, getProducts } from "@/sanity/sanity-utils";
 import { ProductType } from "@/types";
 export default async function Home() {
-  const [products, banners] = await Promise.all([getProducts(), getBanner()]);
+  const [products, banners] = await Promise.all([
+    getProducts("all"),
+    getBanner(),
+  ]);
 
   return (
     <div className="w-full py-20">
@@ -22,7 +25,7 @@ export default async function Home() {
           ))}
         </div>
         <Link
-          href="/products"
+          href="/products/all"
           className="py-3 px-6 w-max bg-black text-white  rounded-sm mx-auto block"
         >
           see all shoes

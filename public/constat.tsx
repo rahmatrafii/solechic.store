@@ -52,3 +52,37 @@ export const profileLink = [
   { name: "Account Settings" },
   { name: "Log Out" },
 ];
+
+export const nameParam = [
+  "contains",
+  "does not contain",
+  "begins",
+  "does not begin",
+  "ended",
+  "not ended",
+];
+
+export const ratingParam = ["higher", "lower", "equal to"];
+
+export const ratingValue = ["1", "2", "3", "4", "5"];
+
+export const COOParam = ["did not come from", "comes from"];
+
+export const navLink = [
+  {
+    title: "all",
+    src: "/products/all",
+  },
+  {
+    title: "men",
+    src: "/products/men",
+  },
+  {
+    title: "women",
+    src: "/products/women",
+  },
+  {
+    title: "kids",
+    src: "/products/kids",
+  },
+];

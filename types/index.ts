@@ -57,3 +57,12 @@ export interface CartProducType {
   size: number;
   quantity: number;
 }
+
+export interface FilterItem {
+  type: string;
+  param?: string;
+  value?: string;
+  from?: string;
+  to?: string;
+}
+export type FilterGroup = FilterItem[];

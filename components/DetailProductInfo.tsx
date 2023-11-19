@@ -140,6 +140,7 @@ const DetailProductInfo = ({ product }: { product: ProductType }) => {
       setIsLoading(false);
     }
   };
+
   return (
     <div className="w-full">
       <h2 className="text-3xl font-semibold ">{product.name}</h2>

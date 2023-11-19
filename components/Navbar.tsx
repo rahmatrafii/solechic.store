@@ -7,11 +7,15 @@ import { signIn, useSession } from "next-auth/react";
 import ProfileIcon from "./ProfileIcon";
 import { collection, onSnapshot, query, where } from "firebase/firestore";
 import firestore from "@/lib/firebase/init";
+import { usePathname } from "next/navigation";
+import { navLink } from "@/public/constat";
+import MobileNav from "./MobileNav";
 
 const Navbar = () => {
   const { data, status } = useSession();
   const [items, setItems] = useState([]);
   const [quantity, setQuantity] = useState(0);
+  const pathName = usePathname();
 
   useEffect(() => {
     if (data?.user && status === "authenticated") {
@@ -34,22 +38,39 @@ const Navbar = () => {
       });
     }
   }, []);
-
   return (
     <nav className="fixed w-full left-0 top-0 px-5 py-3 lg:px-14 md:py-5 bg-white z-[50]">
       <div className="flex w-full items-center justify-between">
-        <Link href={"/"} className="hidden md:block">
+        <Link href={"/"} className="flex items-center">
           <Image
             src="/static/icon/logo.svg"
             width={30}
             height={30}
             alt="Logo"
+            className="mr-3"
           />
+          <h4 className="text-base md:text-[25px] font-normal hidden md:block">
+            SoleChic.store
+          </h4>
         </Link>
-        <Link href={"/"} className="text-base md:text-[25px] font-normal ">
-          SoleChic.store
-        </Link>
-        <div className="flex gap-x-4 md:gap-x-8 items-center">
+
+        <div className="flex gap-x-7 md:gap-x-8 items-center">
+          <div className=" items-center gap-x-5 justify-center hidden lg:flex">
+            {navLink.map((value) => {
+              return (
+                <Link
+                  href={value.src}
+                  className={`${
+                    pathName.split("/")[2] == value.title
+                      ? "border-b-2 border-black"
+                      : "border-b-2 border-white"
+                  } p-2 capitalize`}
+                >
+                  {value.title}
+                </Link>
+              );
+            })}
+          </div>
           <Link href="/cart" className="text-[25px] relative">
             <PiShoppingCartFill />
             {quantity > 0 ? (
@@ -68,6 +89,7 @@ const Navbar = () => {
           ) : (
             <ProfileIcon />
           )}
+          <MobileNav />
         </div>
       </div>
     </nav>
