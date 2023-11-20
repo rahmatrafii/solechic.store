@@ -62,7 +62,7 @@ export const nameParam = [
   "not ended",
 ];
 
-export const ratingParam = ["higher", "lower", "equal to"];
+export const ratingParam = ["higher", "lower", "equal"];
 
 export const ratingValue = ["1", "2", "3", "4", "5"];
 

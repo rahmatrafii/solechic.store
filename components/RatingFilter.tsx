@@ -5,6 +5,8 @@ import { ratingParam, ratingValue } from "@/public/constat";
 import { FilterGroup, FilterItem } from "@/types";
 
 type Props = {
+  groupOprator: string;
+  operator: string;
   index: number;
   indexGroup: number;
   setFilterValue: Dispatch<SetStateAction<FilterGroup[]>>;
@@ -13,6 +15,8 @@ type Props = {
 };
 
 const RatingFilter = ({
+  groupOprator,
+  operator,
   index,
   indexGroup,
   ratingSelected,
@@ -47,9 +51,22 @@ const RatingFilter = ({
       className={`flex w-full justify-between items-center mb-3 p-1 border rounded-md md:border-none `}
     >
       <div className="flex flex-col md:flex-row justify-start items-start  md:items-center">
-        <span className="md:mr-3 mb-3 md:mb-0 md:text-base text-xs">
-          Rating :{" "}
-        </span>
+        <div className="md:mr-3 mb-3 md:mb-0 md:text-base text-xs flex items-center">
+          <p className="mr-3 text-slate-500">
+            {indexGroup > 0
+              ? operator == " && " && index > 1
+                ? "AND"
+                : operator == " || " && index > 1
+                ? "OR"
+                : null
+              : operator == " && " && index > 0
+              ? "AND"
+              : operator == " || " && index > 0
+              ? "OR"
+              : null}
+          </p>
+          <p className="font-medium"> Rating : </p>
+        </div>
         <CustomDropDown
           options={ratingParam}
           selected={paramSelected}

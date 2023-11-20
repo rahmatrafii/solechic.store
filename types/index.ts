@@ -59,7 +59,8 @@ export interface CartProducType {
 }
 
 export interface FilterItem {
-  type: string;
+  operator?: string;
+  type?: string;
   param?: string;
   value?: string;
   from?: string;

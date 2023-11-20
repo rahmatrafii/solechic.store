@@ -17,19 +17,27 @@ import {
   ganeratePriceFilter,
   ganerateRatingFilter,
 } from "@/utils/filterAction";
+import AddGroup from "./AddGroup";
 
 const Filter = () => {
   const pathName = usePathname();
   const [filterActive, setFilterActive] = useState(false);
   const [filterValue, setfilterValue] = useState<FilterGroup[]>([[]]);
 
-  const handleAddFilter = (group: number, type: string, initial?: string) => {
+  const handleAddFilter = (
+    operator: string = "",
+    group: number,
+    type: string,
+    initial?: string
+  ) => {
+    console.log(operator);
     if (type !== "price") {
       setfilterValue((prev) => {
         const updatedFilterValue = [...prev];
         updatedFilterValue[group] = [
           ...updatedFilterValue[group],
           {
+            operator: operator,
             type: type,
             param: initial || "",
             value: "",
@@ -43,6 +51,7 @@ const Filter = () => {
         updatedFilterValue[group] = [
           ...updatedFilterValue[group],
           {
+            operator: operator,
             type: "price",
             from: "",
             to: "",
@@ -52,51 +61,90 @@ const Filter = () => {
       });
     }
   };
+  const handleAddGroup = (operator: string) => {
+    if (
+      (!filterValue[filterValue.length - 1][1] && filterValue.length > 1) ||
+      filterValue[0].length == 0
+    )
+      return false;
 
-  const handleAddGroup = () => {
-    if (!filterValue[filterValue.length - 1][0]) return false;
-    setfilterValue((prev) => [...prev, []]);
+    setfilterValue((prev) => [...prev, [{ operator: operator }]]);
   };
 
   const handleDeleteGroup = (indexToRemove: number) => {
     if (filterValue.length === 1) return false;
+    if (indexToRemove == 0) return false;
     setfilterValue((prev) => prev.filter((item, i) => i !== indexToRemove));
   };
 
   const handleSave = async () => {
     setFilterActive(false);
 
-    if (
-      filterValue.length === 1 ||
-      (filterValue.length === 2 && !filterValue[filterValue.length - 1][0])
-    ) {
+    let length = 0;
+
+    filterValue.map((group, i) => {
+      if (i == 0 && group.length > 0) {
+        return (length += 1);
+      } else if (i >= 0 && group.length > 1) {
+        return (length += 1);
+      }
+    });
+
+
+    if (length == 1) {
       let string: string[] = [];
-      filterValue[0].map((value) => {
-        if (value.type == "name" && value.value) {
-          const res = ganerateNameFilter(
-            value as { type: string; param: string; value: string }
-          );
 
-          string.push(`${res}`);
-        } else if (value.type == "price" && (value.from || value.to)) {
-          const res = ganeratePriceFilter(
-            value as { type: string; from: string; to: string }
-          );
-
-          string.push(`${res}`);
-        } else if (value.type == "rating" && value.value) {
-          const res = ganerateRatingFilter(
-            value as { type: string; param: string; value: string }
-          );
-
-          string.push(`${res}`);
-        } else if (value.type == "country of origin" && value.value) {
-          const res = ganerateCountryOfOriginFilter(
-            value as { type: string; param: string; value: string }
-          );
-
-          string.push(`${res}`);
+      filterValue.map((item, i) => {
+        if (i == 0 && item[i]) {
+          item[i].operator = "";
         }
+        item.map((value) => {
+          if (value.type == "name" && value.value) {
+            const res = ganerateNameFilter(
+              value as {
+                type: string;
+                param: string;
+                value: string;
+                operator: string;
+              }
+            );
+            string.push(`${res}`);
+          } else if (value.type == "price" && (value.from || value.to)) {
+            console.log(value);
+            const res = ganeratePriceFilter(
+              value as {
+                type: string;
+                from: string;
+                to: string;
+                operator: string;
+              }
+            );
+
+            string.push(`${res}`);
+          } else if (value.type == "rating" && value.value) {
+            const res = ganerateRatingFilter(
+              value as {
+                type: string;
+                param: string;
+                value: string;
+                operator: string;
+              }
+            );
+
+            string.push(`${res}`);
+          } else if (value.type == "country of origin" && value.value) {
+            const res = ganerateCountryOfOriginFilter(
+              value as {
+                type: string;
+                param: string;
+                value: string;
+                operator: string;
+              }
+            );
+
+            string.push(`${res}`);
+          }
+        });
       });
 
       if (pathName.split("/")[2] !== "all" && string.length > 0) {
@@ -109,60 +157,96 @@ const Filter = () => {
         JSON.stringify(filterValue)
       );
 
-      searchParams.set("filters", string.join(" && "));
+      searchParams.set("filters", string.join(" "));
+      searchParams.delete("type");
+
       const newPathName = `${
         window.location.pathname
       }?${searchParams.toString()}`;
 
       window.location.href = newPathName;
       return false;
-    } else if (filterValue.length > 1) {
+    } else if (length > 1) {
       let group: any[] = [];
-      filterValue.map((item) => {
+      filterValue.map((item, i) => {
         let string = "";
         if (!item[0]) return false;
-        item.map((value: any) => {
+
+        item.map((value: any, i2) => {
           if (value.type == "name" && value.value) {
             const res = ganerateNameFilter(
-              value as { type: string; param: string; value: string }
+              value as {
+                type: string;
+                param: string;
+                value: string;
+                operator: string;
+              }
             );
 
-            string += ` && ${res}`;
+            string += `${res}`;
           } else if (value.type == "price" && (value.from || value.to)) {
             const res = ganeratePriceFilter(
-              value as { type: string; from: string; to: string }
+              value as {
+                type: string;
+                from: string;
+                to: string;
+                operator: string;
+              }
             );
 
-            string += ` && ${res}`;
+            string += `${res}`;
           } else if (value.type == "rating" && value.value) {
             const res = ganerateRatingFilter(
-              value as { type: string; param: string; value: string }
+              value as {
+                type: string;
+                param: string;
+                value: string;
+                operator: string;
+              }
             );
 
-            string += ` && ${res}`;
+            string += `${res}`;
           } else if (value.type == "country of origin" && value.value) {
             const res = ganerateCountryOfOriginFilter(
-              value as { type: string; param: string; value: string }
+              value as {
+                type: string;
+                param: string;
+                value: string;
+                operator: string;
+              }
             );
 
-            string += ` && ${res}`;
+            string += `${res}`;
           }
         });
-        group.push(
-          `(_type == "product" ${
-            pathName.split("/")[2] !== "all"
-              ? `&& category match "${pathName.split("/")[2]}*"`
-              : ""
-          } ${string})`
-        );
+
+        // ? jika ada stringnya phus ke group
+        if (string) {
+          group.push(
+            ` ${
+              item[0].operator ? item[0].operator : ""
+            } (_type == "product" && ${
+              pathName.split("/")[2] !== "all"
+                ? `&& category match "${pathName.split("/")[2]}*"`
+                : ""
+            } ${string})`
+          );
+        }
       });
 
       const searchParams = new URLSearchParams(window.location.search);
 
-      searchParams.set("filters", group.join(" || "));
+      searchParams.set("type", "grouping");
+
+      console.log(group);
+      console.log(group.length);
+
+      searchParams.set("filters", group.join(""));
       const newPathName = `${
         window.location.pathname
       }?${searchParams.toString()}`;
+
+      console.log(newPathName);
 
       localStorage.setItem(
         `${pathName.split("/")[2]}-filter`,
@@ -171,6 +255,15 @@ const Filter = () => {
 
       window.location.href = newPathName;
       return false;
+    } else {
+      const searchParams = new URLSearchParams(window.location.search);
+      localStorage.removeItem(`${pathName.split("/")[2]}-filter`);
+      searchParams.delete("filters");
+      searchParams.delete("type");
+      const newPathName = `${
+        window.location.pathname
+      }?${searchParams.toString()}`;
+      window.location.href = newPathName;
     }
   };
 
@@ -199,71 +292,96 @@ const Filter = () => {
         } transition-all duration-300 absolute right-0  border md:min-w-[450px] sm:w-max shadow-md rounded-lg bg-white p-2 sm:p-3 md:p-5`}
       >
         <div className="my-8 w-full">
-          {filterValue.map((item, i) => (
-            <div
-              className="w-full flex justify-center border border-gray-400 rounded-xl p-2 sm:p-3 md:p-4 mb-6"
-              key={i}
-            >
-              <div className="w-auto mr-2 sm:mr-4 md:mr-5">
-                {item.map((item2, i2) =>
-                  item2.type == "name" ? (
-                    <NameFilter
-                      key={i2 + i}
-                      index={i2}
-                      indexGroup={i}
-                      selected={item2.param as string}
-                      value={item2.value as string}
-                      setFilterValue={setfilterValue}
+          {filterValue.map((item, i) => {
+            const fristFilter =
+              i == 0 && !item[0] ? true : i > 0 && !item[1] ? true : false;
+            return (
+              <>
+                <p className="font-semibold text-center mx-auto w-max mb-3">
+                  {item[0]?.operator == " && " && i > 0
+                    ? "AND"
+                    : item[0]?.operator == " || " && i > 0
+                    ? "OR"
+                    : null}
+                </p>
+                <div
+                  className={`w-full flex  border border-gray-400 rounded-xl p-2 sm:p-3 md:p-4 mb-3  ${
+                    item.length > 0 ? "justify-between" : "justify-center"
+                  }`}
+                  key={i}
+                >
+                  <div className="w-auto mr-2 sm:mr-4 md:mr-5">
+                    {item.map((item2, i2) =>
+                      item2.type == "name" ? (
+                        <NameFilter
+                          groupOprator={item[0]?.operator as string}
+                          operator={item2.operator as string}
+                          key={i2 + i}
+                          index={i2}
+                          indexGroup={i}
+                          selected={item2.param as string}
+                          value={item2.value as string}
+                          setFilterValue={setfilterValue}
+                        />
+                      ) : item2.type == "price" ? (
+                        <PriceFilter
+                          groupOprator={item[0]?.operator as string}
+                          operator={item2.operator as string}
+                          index={i2}
+                          indexGroup={i}
+                          key={i2 + i}
+                          setFilterValue={setfilterValue}
+                          from={filterValue[i][i2].from as string}
+                          to={filterValue[i][i2].to as string}
+                        />
+                      ) : item2.type == "rating" ? (
+                        <RatingFilter
+                          groupOprator={item[0]?.operator as string}
+                          operator={item2.operator as string}
+                          index={i2}
+                          indexGroup={i}
+                          key={i2 + i}
+                          setFilterValue={setfilterValue}
+                          ratingSelected={filterValue[i][i2].value as string}
+                          paramSelected={filterValue[i][i2].param as string}
+                        />
+                      ) : item2.type == "country of origin" ? (
+                        <CountryOfOriginFilter
+                          groupOprator={item[0]?.operator as string}
+                          operator={item2.operator as string}
+                          key={i2 + i}
+                          index={i2}
+                          indexGroup={i}
+                          selected={item2.param as string}
+                          value={item2.value as string}
+                          setFilterValue={setfilterValue}
+                        />
+                      ) : null
+                    )}
+                  </div>
+                  <div
+                    className={`w-max flex flex-col md:flex-row items-end justify-end ${
+                      item.length > 0 && "flex col"
+                    }`}
+                  >
+                    <AddFilter
+                      fristFilter={fristFilter}
+                      index={i}
+                      handleAddFilter={handleAddFilter}
                     />
-                  ) : item2.type == "price" ? (
-                    <PriceFilter
-                      index={i2}
-                      indexGroup={i}
-                      key={i2 + i}
-                      setFilterValue={setfilterValue}
-                      from={filterValue[i][i2].from as string}
-                      to={filterValue[i][i2].to as string}
-                    />
-                  ) : item2.type == "rating" ? (
-                    <RatingFilter
-                      index={i2}
-                      indexGroup={i}
-                      key={i2 + i}
-                      setFilterValue={setfilterValue}
-                      ratingSelected={filterValue[i][i2].value as string}
-                      paramSelected={filterValue[i][i2].param as string}
-                    />
-                  ) : item2.type == "country of origin" ? (
-                    <CountryOfOriginFilter
-                      key={i2 + i}
-                      index={i2}
-                      indexGroup={i}
-                      selected={item2.param as string}
-                      value={item2.value as string}
-                      setFilterValue={setfilterValue}
-                    />
-                  ) : null
-                )}
-              </div>
-              <div
-                className={`w-max flex flex-col md:flex-row items-end justify-end ${
-                  item.length > 0 && "flex col"
-                }`}
-              >
-                <AddFilter index={i} handleAddFilter={handleAddFilter} />
-                <DeleteGroup handleDeleteGroup={() => handleDeleteGroup(i)} />
-              </div>
-            </div>
-          ))}
+                    {i > 0 ? (
+                      <DeleteGroup
+                        handleDeleteGroup={() => handleDeleteGroup(i)}
+                      />
+                    ) : null}
+                  </div>
+                </div>
+              </>
+            );
+          })}
         </div>
-        <div className="flex justify-end items-center">
-          <button
-            className="md:py-2 md:px-4 py-1 px-2 text-xs rounded-md bg-black text-white whitespace-nowrap flex items-center justify-center mr-5"
-            onClick={handleAddGroup}
-          >
-            <span className="mr-3">Add Filter Group</span>
-            <FaPlus />
-          </button>
+        <div className="flex justify-end items-center ">
+          <AddGroup handleAddGroup={handleAddGroup} />
           <button
             className="md:py-2 md:px-4 py-1 px-2 text-xs rounded-md bg-black text-white "
             onClick={handleSave}
@@ -277,3 +395,30 @@ const Filter = () => {
 };
 
 export default Filter;
+
+[
+  [
+    {
+      operator: " || ",
+      type: "rating",
+      param: "higher",
+      value: "5",
+    },
+    { operator: " && ", type: "price", from: "", to: "170" },
+  ],
+  [
+    { operator: " && " },
+    {
+      operator: " && ",
+      type: "country of origin",
+      param: "comes from",
+      value: "",
+    },
+    {
+      operator: " || ",
+      type: "rating",
+      param: "higher",
+      value: "",
+    },
+  ],
+];

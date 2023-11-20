@@ -12,11 +12,13 @@ export const metadata: Metadata = {
 };
 
 const AllPage = async ({ searchParams }: any) => {
+  console.log(searchParams.filters);
+  console.log(searchParams.type);
   let products;
   if (!searchParams.filters || searchParams.filters == "") {
     products = await getProducts("all");
   } else {
-    if (searchParams.filters.includes(" || ")) {
+    if (searchParams.type) {
       products = await getProductsGroupFiltered(searchParams.filters);
     } else {
       products = await getProductsFiltered(searchParams.filters);

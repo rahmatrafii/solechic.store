@@ -20,9 +20,15 @@ export async function getProducts(type: string = "all") {
 
   return client.fetch(query2 as string);
 }
+// export async function getProducts(type: string = "all") {
+//   let query2 = `*[_type == "product" && name match "air" || rating >= 4.1]`;
+
+//   return client.fetch(query2 as string);
+// }
 
 export async function getProductsGroupFiltered(query: string) {
   const query2 = `*[${query}]`;
+  console.log(query2);
   const res = await client.fetch(query2);
   return res;
 }

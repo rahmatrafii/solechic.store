@@ -6,6 +6,7 @@ import Link from "next/link";
 import React from "react";
 
 const CardProduct = ({ product }: { product: ProductType }) => {
+  if (!product?.image && !product?.rate) return <></>;
   return (
     <div className=" hover:rounded-2xl transition-all duration-300">
       <Link href={`/product/${product.slug?.current}`}>
