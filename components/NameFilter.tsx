@@ -50,7 +50,6 @@ const NameFilter = ({
     });
   };
 
-  // console.log(groupOprator);
 
   return (
     <div

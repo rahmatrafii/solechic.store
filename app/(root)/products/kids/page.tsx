@@ -13,7 +13,7 @@ export const metadata = {
 const KidsPage = async ({ searchParams }: any) => {
   let products;
   if (!searchParams.filters || searchParams.filters == "") {
-    products = await getProducts("all");
+    products = await getProducts("kids");
   } else {
     if (searchParams.type) {
       products = await getProductsGroupFiltered(searchParams.filters);

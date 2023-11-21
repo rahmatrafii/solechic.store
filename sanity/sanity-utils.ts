@@ -28,7 +28,6 @@ export async function getProducts(type: string = "all") {
 
 export async function getProductsGroupFiltered(query: string) {
   const query2 = `*[${query}]`;
-  console.log(query2);
   const res = await client.fetch(query2);
   return res;
 }

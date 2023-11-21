@@ -18,7 +18,7 @@ const MobileNav = () => {
       <div
         className={`${
           showMobileNav ? "translate-x-[0%]" : "translate-x-[100%]"
-        } transition-all duration-300 fixed right-0 top-0 h-screen bg-white w-[50%] p-5`}
+        } transition-all duration-300 fixed right-0 top-0 h-screen bg-white w-[50%] p-5 lg:hidden`}
       >
         <button
           className="text-3xl mb-8"

@@ -30,7 +30,6 @@ const Filter = () => {
     type: string,
     initial?: string
   ) => {
-    console.log(operator);
     if (type !== "price") {
       setfilterValue((prev) => {
         const updatedFilterValue = [...prev];
@@ -109,7 +108,6 @@ const Filter = () => {
             );
             string.push(`${res}`);
           } else if (value.type == "price" && (value.from || value.to)) {
-            console.log(value);
             const res = ganeratePriceFilter(
               value as {
                 type: string;
@@ -170,7 +168,9 @@ const Filter = () => {
       filterValue.map((item, i) => {
         let string = "";
         if (!item[0]) return false;
-
+        if (i == 0 && item[i]) {
+          item[i].operator = "";
+        }
         item.map((value: any, i2) => {
           if (value.type == "name" && value.value) {
             const res = ganerateNameFilter(
@@ -237,15 +237,10 @@ const Filter = () => {
 
       searchParams.set("type", "grouping");
 
-      console.log(group);
-      console.log(group.length);
-
       searchParams.set("filters", group.join(""));
       const newPathName = `${
         window.location.pathname
       }?${searchParams.toString()}`;
-
-      console.log(newPathName);
 
       localStorage.setItem(
         `${pathName.split("/")[2]}-filter`,

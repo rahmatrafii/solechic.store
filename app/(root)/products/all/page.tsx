@@ -12,7 +12,6 @@ export const metadata: Metadata = {
 };
 
 const AllPage = async ({ searchParams }: any) => {
-  
   let products;
   if (!searchParams.filters || searchParams.filters == "") {
     products = await getProducts("all");

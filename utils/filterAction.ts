@@ -47,7 +47,6 @@ export function ganeratePriceFilter(obj: {
   to: string;
 }) {
   let string;
-  console.log(obj.operator);
   if (!obj.from && obj.to) {
     string = ` ${obj.operator ? obj.operator : ""} price <= ${obj.to}`;
   } else if (obj.from && !obj.to) {

@@ -11,7 +11,7 @@ export const metadata = {
 const MenPage = async ({ searchParams }: any) => {
   let products;
   if (!searchParams.filters || searchParams.filters == "") {
-    products = await getProducts("all");
+    products = await getProducts("men");
   } else {
     if (searchParams.type) {
       products = await getProductsGroupFiltered(searchParams.filters);
