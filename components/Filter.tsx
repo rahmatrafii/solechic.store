@@ -90,7 +90,6 @@ const Filter = () => {
       }
     });
 
-
     if (length == 1) {
       let string: string[] = [];
 
@@ -148,7 +147,7 @@ const Filter = () => {
       });
 
       if (pathName.split("/")[2] !== "all" && string.length > 0) {
-        string.push(`category match "${pathName.split("/")[2]}*"`);
+        string.push(` && category match "${pathName.split("/")[2]}*"`);
       }
 
       const searchParams = new URLSearchParams(window.location.search);
@@ -227,7 +226,7 @@ const Filter = () => {
               item[0].operator ? item[0].operator : ""
             } (_type == "product" && ${
               pathName.split("/")[2] !== "all"
-                ? `&& category match "${pathName.split("/")[2]}*"`
+                ? `category match "${pathName.split("/")[2]}*" &&`
                 : ""
             } ${string})`
           );

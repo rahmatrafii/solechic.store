@@ -10,6 +10,7 @@ export const metadata = {
 };
 const WomenPage = async ({ searchParams }: any) => {
   let products;
+  console.log(searchParams);
   if (!searchParams.filters || searchParams.filters == "") {
     products = await getProducts("all");
   } else {
