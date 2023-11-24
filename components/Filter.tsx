@@ -3,13 +3,12 @@ import React, { useEffect, useState } from "react";
 import { IoFilter } from "react-icons/io5";
 import { LiaTimesSolid } from "react-icons/lia";
 import AddFilter from "./AddFilter";
-import { FaPlus } from "react-icons/fa6";
 import NameFilter from "./NameFilter";
 import PriceFilter from "./PriceFilter";
 import RatingFilter from "./RatingFilter";
 import CountryOfOriginFilter from "./CountryOfOriginFilter";
 import DeleteGroup from "./DeleteGroup";
-import { FilterGroup } from "@/types";
+import { FilterGroup, FilterItem } from "@/types";
 import { usePathname } from "next/navigation";
 import {
   ganerateCountryOfOriginFilter,
@@ -18,11 +17,12 @@ import {
   ganerateRatingFilter,
 } from "@/utils/filterAction";
 import AddGroup from "./AddGroup";
+import CustomDropDown from "./CustomDropDown";
 
 const Filter = () => {
   const pathName = usePathname();
   const [filterActive, setFilterActive] = useState(false);
-  const [filterValue, setfilterValue] = useState<FilterGroup[]>([[]]);
+  const [filterValue, setFilterValue] = useState<FilterGroup[]>([[]]);
 
   const handleAddFilter = (
     operator: string = "",
@@ -31,7 +31,7 @@ const Filter = () => {
     initial?: string
   ) => {
     if (type !== "price") {
-      setfilterValue((prev) => {
+      setFilterValue((prev) => {
         const updatedFilterValue = [...prev];
         updatedFilterValue[group] = [
           ...updatedFilterValue[group],
@@ -45,7 +45,7 @@ const Filter = () => {
         return updatedFilterValue;
       });
     } else if (type == "price") {
-      setfilterValue((prev) => {
+      setFilterValue((prev) => {
         const updatedFilterValue = [...prev];
         updatedFilterValue[group] = [
           ...updatedFilterValue[group],
@@ -60,27 +60,49 @@ const Filter = () => {
       });
     }
   };
+
+  const handleRemoveFilter = (indexGroup: number, index: number) => {
+    setFilterValue((prevFilterValue: FilterGroup[]) => {
+      const updatedFilterValue = prevFilterValue.map((group: any, i: number) =>
+        i === indexGroup
+          ? group.filter((item: FilterItem, j: number) => j !== index)
+          : group
+      );
+      return updatedFilterValue;
+    });
+  };
+
   const handleAddGroup = (operator: string) => {
     if (
-      (!filterValue[filterValue.length - 1][1] && filterValue.length > 1) ||
+      !filterValue[filterValue.length - 1][1] &&
+      filterValue.length > 1 &&
       filterValue[0].length == 0
     )
       return false;
 
-    setfilterValue((prev) => [...prev, [{ operator: operator }]]);
+    setFilterValue((prev) => [...prev, [{ operator: operator }]]);
   };
 
   const handleDeleteGroup = (indexToRemove: number) => {
     if (filterValue.length === 1) return false;
     if (indexToRemove == 0) return false;
-    setfilterValue((prev) => prev.filter((item, i) => i !== indexToRemove));
+    setFilterValue((prev) => prev.filter((item, i) => i !== indexToRemove));
+  };
+
+  const handleChangeOperatorGroup = (indexGroup: number, operator: string) => {
+    setFilterValue((prevFilterValue: FilterGroup[]) => {
+      const updatedFilterValue = [...prevFilterValue];
+      updatedFilterValue[indexGroup][0].operator = operator;
+      return updatedFilterValue;
+    });
   };
 
   const handleSave = async () => {
     setFilterActive(false);
-
+    const searchParams = new URLSearchParams(window.location.search);
     let length = 0;
 
+    // ? mencek ada berapa filter yang disi
     filterValue.map((group, i) => {
       if (i == 0 && group.length > 0) {
         return (length += 1);
@@ -89,13 +111,16 @@ const Filter = () => {
       }
     });
 
+    // ? jika hanya ada 1 filter
     if (length == 1) {
       let string: string[] = [];
 
       filterValue.map((item, i) => {
-        if (i == 0 && item[i]) {
+        // ? menghapus semua operator group
+        if (item[i]) {
           item[i].operator = "";
         }
+        // ? rangkai filter didalam state menjadi query dan disimpan di let string
         item.map((value) => {
           if (value.type == "name" && value.value) {
             const res = ganerateNameFilter(
@@ -138,40 +163,56 @@ const Filter = () => {
                 operator: string;
               }
             );
-
             string.push(`${res}`);
           }
         });
       });
 
+      // ? jika berada dipage selain All Products
       if (pathName.split("/")[2] !== "all" && string.length > 0) {
         string.push(` && category match "${pathName.split("/")[2]}*"`);
       }
 
-      const searchParams = new URLSearchParams(window.location.search);
+      // ? set LocalStorage agar filter yang diisi user tidak hilang
       localStorage.setItem(
         `${pathName.split("/")[2]}-filter`,
         JSON.stringify(filterValue)
       );
 
+      // ? query yang sudah dibuat dan dimasukkan di array disimpan di param "filters"
       searchParams.set("filters", string.join(" "));
+      // ? hapus SearchParams "type" jika ada
       searchParams.delete("type");
 
+      // ? rangkai url kedalam variable newPathName
       const newPathName = `${
         window.location.pathname
       }?${searchParams.toString()}`;
 
+      // ? lalu ubah url dengan url yang sudah dirangkai
       window.location.href = newPathName;
       return false;
     } else if (length > 1) {
       let group: any[] = [];
-      filterValue.map((item, i) => {
+      filterValue.map((item: FilterGroup, i) => {
         let string = "";
-        if (!item[0]) return false;
-        if (i == 0 && item[i]) {
-          item[i].operator = "";
+
+        // ? jika tidak ada filter di dalam item idex ke-1 berarti group kosong maka return false
+        if (!item[1] && i !== 0) {
+          return false;
         }
-        item.map((value: any, i2) => {
+
+        item.map((value: any, i2: number) => {
+          if (!value.type) {
+            return false;
+          }
+          // ? menghapus operator difilter pertama didalam group
+          if (i2 === 1 && i !== 0) {
+            value.operator = "";
+          } else if (i2 == 0 && i === 0) {
+            value.operator = "";
+          }
+
           if (value.type == "name" && value.value) {
             const res = ganerateNameFilter(
               value as {
@@ -223,7 +264,13 @@ const Filter = () => {
         if (string) {
           group.push(
             ` ${
-              item[0].operator ? item[0].operator : ""
+              group.length > 0
+                ? item[0].operator == "AND"
+                  ? "&&"
+                  : item[0].operator == "OR"
+                  ? "||"
+                  : ""
+                : ""
             } (_type == "product" && ${
               pathName.split("/")[2] !== "all"
                 ? `category match "${pathName.split("/")[2]}*" &&`
@@ -232,8 +279,6 @@ const Filter = () => {
           );
         }
       });
-
-      const searchParams = new URLSearchParams(window.location.search);
 
       searchParams.set("type", "grouping");
 
@@ -250,7 +295,7 @@ const Filter = () => {
       window.location.href = newPathName;
       return false;
     } else {
-      const searchParams = new URLSearchParams(window.location.search);
+      // ? jika filter kosong set dilocaleStorage menjadi kosong dan hapus semua seachparams
       localStorage.removeItem(`${pathName.split("/")[2]}-filter`);
       searchParams.delete("filters");
       searchParams.delete("type");
@@ -261,12 +306,12 @@ const Filter = () => {
     }
   };
 
+  // ? menyimpan filter di LocalStorage ke satate filterValue
   useEffect(() => {
     const fil = localStorage.getItem(`${pathName.split("/")[2]}-filter`);
     const ter = JSON.parse(fil as string);
-
     if (ter) {
-      setfilterValue(ter);
+      setFilterValue(ter);
     }
   }, []);
 
@@ -289,15 +334,20 @@ const Filter = () => {
           {filterValue.map((item, i) => {
             const fristFilter =
               i == 0 && !item[0] ? true : i > 0 && !item[1] ? true : false;
+
             return (
               <>
-                <p className="font-semibold text-center mx-auto w-max mb-3">
-                  {item[0]?.operator == " && " && i > 0
-                    ? "AND"
-                    : item[0]?.operator == " || " && i > 0
-                    ? "OR"
-                    : null}
-                </p>
+                <div className="font-semibold text-center mx-auto w-max mb-3">
+                  {i > 0 ? (
+                    <CustomDropDown
+                      options={["AND", "OR"]}
+                      selected={item[0]?.operator}
+                      setSelected={(e: string) =>
+                        handleChangeOperatorGroup(i, e)
+                      }
+                    />
+                  ) : null}
+                </div>
                 <div
                   className={`w-full flex  border border-gray-400 rounded-xl p-2 sm:p-3 md:p-4 mb-3  ${
                     item.length > 0 ? "justify-between" : "justify-center"
@@ -308,47 +358,47 @@ const Filter = () => {
                     {item.map((item2, i2) =>
                       item2.type == "name" ? (
                         <NameFilter
-                          groupOprator={item[0]?.operator as string}
                           operator={item2.operator as string}
                           key={i2 + i}
                           index={i2}
                           indexGroup={i}
                           selected={item2.param as string}
                           value={item2.value as string}
-                          setFilterValue={setfilterValue}
+                          setFilterValue={setFilterValue}
+                          handleRemoveFilter={() => handleRemoveFilter(i, i2)}
                         />
                       ) : item2.type == "price" ? (
                         <PriceFilter
-                          groupOprator={item[0]?.operator as string}
                           operator={item2.operator as string}
                           index={i2}
                           indexGroup={i}
                           key={i2 + i}
-                          setFilterValue={setfilterValue}
-                          from={filterValue[i][i2].from as string}
-                          to={filterValue[i][i2].to as string}
+                          setFilterValue={setFilterValue}
+                          from={item2.from as string}
+                          to={item2.to as string}
+                          handleRemoveFilter={() => handleRemoveFilter(i, i2)}
                         />
                       ) : item2.type == "rating" ? (
                         <RatingFilter
-                          groupOprator={item[0]?.operator as string}
                           operator={item2.operator as string}
                           index={i2}
                           indexGroup={i}
                           key={i2 + i}
-                          setFilterValue={setfilterValue}
-                          ratingSelected={filterValue[i][i2].value as string}
-                          paramSelected={filterValue[i][i2].param as string}
+                          setFilterValue={setFilterValue}
+                          ratingSelected={item2.value as string}
+                          paramSelected={item2.param as string}
+                          handleRemoveFilter={() => handleRemoveFilter(i, i2)}
                         />
                       ) : item2.type == "country of origin" ? (
                         <CountryOfOriginFilter
-                          groupOprator={item[0]?.operator as string}
                           operator={item2.operator as string}
                           key={i2 + i}
                           index={i2}
                           indexGroup={i}
                           selected={item2.param as string}
                           value={item2.value as string}
-                          setFilterValue={setfilterValue}
+                          setFilterValue={setFilterValue}
+                          handleRemoveFilter={() => handleRemoveFilter(i, i2)}
                         />
                       ) : null
                     )}
@@ -389,30 +439,3 @@ const Filter = () => {
 };
 
 export default Filter;
-
-[
-  [
-    {
-      operator: " || ",
-      type: "rating",
-      param: "higher",
-      value: "5",
-    },
-    { operator: " && ", type: "price", from: "", to: "170" },
-  ],
-  [
-    { operator: " && " },
-    {
-      operator: " && ",
-      type: "country of origin",
-      param: "comes from",
-      value: "",
-    },
-    {
-      operator: " || ",
-      type: "rating",
-      param: "higher",
-      value: "",
-    },
-  ],
-];

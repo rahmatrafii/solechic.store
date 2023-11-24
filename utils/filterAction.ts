@@ -1,105 +1,187 @@
-export function ganerateNameFilter(obj: {
+export function ganerateNameFilter({
+  operator,
+  param,
+  type,
+  value,
+}: {
   operator: string;
   type: string;
   param: string;
   value: string;
 }) {
   let string = ``;
-  if (!obj.value) return null;
-  switch (obj.param) {
+  if (!value) return null;
+  switch (param) {
     case "contains":
-      string = ` ${obj.operator ? obj.operator : ""} name match "*${
-        obj.value
-      }*"`;
+      string = `${
+        operator && operator == "AND"
+          ? " && "
+          : operator && operator == "OR"
+          ? " || "
+          : ""
+      } name match "*${value}*"`;
       break;
     case "does not contain":
-      string = ` ${obj.operator ? obj.operator : ""} !(name match "*${
-        obj.value
-      }*")`;
+      string = `${
+        operator && operator == "AND"
+          ? " && "
+          : operator && operator == "OR"
+          ? " || "
+          : ""
+      } !(name match "*${value}*")`;
       break;
     case "begins":
-      string = ` ${obj.operator ? obj.operator : ""} name match "${
-        obj.value
-      }*"`;
+      string = `${
+        operator && operator == "AND"
+          ? " && "
+          : operator && operator == "OR"
+          ? " || "
+          : ""
+      } name match "${value}*"`;
       break;
     case "does not begin":
-      string = ` ${obj.operator ? obj.operator : ""} !(name match "${
-        obj.value
-      }*")`;
+      string = `${
+        operator && operator == "AND"
+          ? " && "
+          : operator && operator == "OR"
+          ? " || "
+          : ""
+      } !(name match "${value}*")`;
       break;
     case "ended":
-      string = ` ${obj.operator ? obj.operator : ""} name match "${
-        obj.value
-      }$"`;
+      string = `${
+        operator && operator == "AND"
+          ? " && "
+          : operator && operator == "OR"
+          ? " || "
+          : ""
+      } name match "${value}$"`;
       break;
     case "not ended":
-      string = ` ${obj.operator ? obj.operator : ""} !(name match "${
-        obj.value
-      }$")`;
+      string = `${
+        operator && operator == "AND"
+          ? " && "
+          : operator && operator == "OR"
+          ? " || "
+          : ""
+      } !(name match "${value}$")`;
       break;
   }
   return string;
 }
-export function ganeratePriceFilter(obj: {
+export function ganeratePriceFilter({
+  from,
+  operator,
+  to,
+  type,
+}: {
   operator: string;
   type: string;
   from: string;
   to: string;
 }) {
   let string;
-  if (!obj.from && obj.to) {
-    string = ` ${obj.operator ? obj.operator : ""} price <= ${obj.to}`;
-  } else if (obj.from && !obj.to) {
-    string = ` ${obj.operator ? obj.operator : ""} price >= ${obj.from}`;
-  } else {
-    string = ` ${obj.operator ? obj.operator : ""} price >= ${
-      obj.from
-    } && price <= ${obj.to}`;
+  if (from && to) {
+    string = `${
+      operator && operator == "AND"
+        ? " && "
+        : operator && operator == "OR"
+        ? " || "
+        : ""
+    } price >= ${from} && price <= ${to}`;
+  } else if (from && !to) {
+    string = `${
+      operator && operator == "AND"
+        ? " && "
+        : operator && operator == "OR"
+        ? " || "
+        : ""
+    } price >= ${from}`;
+  } else if (!from && to) {
+    string = `${
+      operator && operator == "AND"
+        ? " && "
+        : operator && operator == "OR"
+        ? " || "
+        : ""
+    }  price <= ${to}`;
   }
 
   return string;
 }
-export function ganerateRatingFilter(obj: {
+export function ganerateRatingFilter({
+  operator,
+  param,
+  type,
+  value,
+}: {
   operator: string;
   type: string;
   param: string;
   value: string;
 }) {
   let string = "";
-  switch (obj.param) {
+  switch (param) {
     case "higher":
-      string = ` ${obj.operator ? obj.operator : ""} rate >= ${
-        Number(obj.value) + 0.1
-      }`;
+      string = `${
+        operator && operator == "AND"
+          ? " && "
+          : operator && operator == "OR"
+          ? " || "
+          : ""
+      } rate >= ${Number(value) + 0.1}`;
       break;
     case "lower":
-      string = ` ${obj.operator ? obj.operator : ""} rate <= ${
-        Number(obj.value) - 0.1
-      }`;
+      string = `${
+        operator && operator == "AND"
+          ? " && "
+          : operator && operator == "OR"
+          ? " || "
+          : ""
+      } rate <= ${Number(value) - 0.1}`;
       break;
     case "equal":
-      string = ` ${obj.operator ? obj.operator : ""} rate == ${obj.value}`;
+      string = `${
+        operator && operator == "AND"
+          ? " && "
+          : operator && operator == "OR"
+          ? " || "
+          : ""
+      } rate == ${value}`;
       break;
   }
   return string;
 }
-export function ganerateCountryOfOriginFilter(obj: {
+export function ganerateCountryOfOriginFilter({
+  operator,
+  param,
+  type,
+  value,
+}: {
   type: string;
   param: string;
   value: string;
   operator: string;
 }) {
   let string = "";
-  switch (obj.param) {
+  switch (param) {
     case "comes from":
-      string = ` ${obj.operator ? obj.operator : ""} origin match "${
-        obj.value
-      }"`;
+      string = `${
+        operator && operator == "AND"
+          ? " && "
+          : operator && operator == "OR"
+          ? " || "
+          : ""
+      } origin match "${value}"`;
       break;
     case "did not come from":
-      string = ` ${obj.operator ? obj.operator : ""} !(origin match "${
-        obj.value
-      }")`;
+      string = `${
+        operator && operator == "AND"
+          ? " && "
+          : operator && operator == "OR"
+          ? " || "
+          : ""
+      } !(origin match "${value}")`;
       break;
   }
   return string;

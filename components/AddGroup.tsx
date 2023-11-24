@@ -1,5 +1,6 @@
-import React, { MouseEventHandler, useState } from "react";
+import React, { useState } from "react";
 import { FaPlus } from "react-icons/fa";
+import { VscClose } from "react-icons/vsc";
 
 type Props = {
   handleAddGroup: (operator: string) => void;
@@ -13,7 +14,7 @@ const AddGroup = ({ handleAddGroup }: Props) => {
       onClick={() => setShowOperator((prev) => !prev)}
     >
       <span className="mr-3">Add Filter Group</span>
-      <FaPlus />
+      {!showOperator ? <FaPlus /> : <VscClose />}
       <div
         className={`${
           showOperator
@@ -24,18 +25,18 @@ const AddGroup = ({ handleAddGroup }: Props) => {
         <button
           className="w-full py-2 font-semibold text-black whitespace-nowrap hover:bg-slate-200 bg-white text-xs md:text-sm"
           onClick={() => {
-            handleAddGroup(" || ");
+            handleAddGroup("AND");
           }}
         >
-          OR
+          AND
         </button>
         <button
           className="w-full py-2 font-semibold text-black whitespace-nowrap hover:bg-slate-200 bg-white text-xs md:text-sm"
           onClick={() => {
-            handleAddGroup(" && ");
+            handleAddGroup("OR");
           }}
         >
-          AND
+          OR
         </button>
       </div>
     </div>

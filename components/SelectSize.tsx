@@ -2,10 +2,12 @@ import { allSize } from "@/public/constat";
 import React, { SetStateAction } from "react";
 
 const SelectSize = ({
+  sizeOptions,
   size,
   setSize,
   error,
 }: {
+  sizeOptions: number[];
   size: number;
   setSize: React.Dispatch<SetStateAction<number>>;
   error: string;
@@ -15,7 +17,7 @@ const SelectSize = ({
   };
   return (
     <div className="grid grid-cols-3 gap-2 mb-10">
-      {allSize.map((number: number) => (
+      {sizeOptions.map((number: number) => (
         <div
           key={number}
           onClick={() => handleSize(number)}

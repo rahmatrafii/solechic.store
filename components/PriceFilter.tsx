@@ -1,21 +1,26 @@
 "use client";
-import { FilterGroup, FilterItem } from "@/types";
-import React, { ChangeEvent, Dispatch, SetStateAction } from "react";
+import { FilterGroup } from "@/types";
+import React, {
+  ChangeEvent,
+  Dispatch,
+  MouseEventHandler,
+  SetStateAction,
+} from "react";
 import { BsTrashFill } from "react-icons/bs";
+import CustomDropDown from "./CustomDropDown";
 
 type Props = {
-  groupOprator: string;
-
   operator: string;
   index: number;
   indexGroup: number;
   setFilterValue: Dispatch<SetStateAction<FilterGroup[]>>;
   from: string;
   to: string;
+  handleRemoveFilter: MouseEventHandler<HTMLButtonElement>;
 };
 
 const PriceFilter = ({
-  groupOprator,
+  handleRemoveFilter,
   operator,
   setFilterValue,
   from,
@@ -35,14 +40,14 @@ const PriceFilter = ({
     });
   };
 
-  const handleDeleteFilter = () => {
+  const handleSetSelected = (e: string, type: string) => {
     setFilterValue((prevFilterValue: FilterGroup[]) => {
-      const updatedFilterValue = prevFilterValue.map(
-        (group: FilterGroup, i: number) =>
-          i === indexGroup
-            ? group.filter((item: FilterItem, j: number) => j !== index)
-            : group
-      );
+      const updatedFilterValue = [...prevFilterValue];
+      if (type == "operator") {
+        updatedFilterValue[indexGroup][index].operator = e;
+      } else if (type == "param") {
+        updatedFilterValue[indexGroup][index].param = e;
+      }
       return updatedFilterValue;
     });
   };
@@ -53,17 +58,14 @@ const PriceFilter = ({
       <div className="flex flex-col md:flex-row items-start justify-start md:items-center">
         <div className="md:mr-3 mb-3 md:mb-0 md:text-base text-xs flex items-center">
           <p className="mr-3 text-slate-500">
-            {indexGroup > 0
-              ? operator == " && " && index > 1
-                ? "AND"
-                : operator == " || " && index > 1
-                ? "OR"
-                : null
-              : operator == " && " && index > 0
-              ? "AND"
-              : operator == " || " && index > 0
-              ? "OR"
-              : null}
+            {(operator !== "" && index > 0 && indexGroup === 0) ||
+            (operator !== "" && index > 1 && indexGroup !== 0) ? (
+              <CustomDropDown
+                options={["AND", "OR"]}
+                selected={operator}
+                setSelected={(e: string) => handleSetSelected(e, "operator")}
+              />
+            ) : null}
           </p>
           <p className="font-medium"> Price : </p>
         </div>
@@ -100,7 +102,7 @@ const PriceFilter = ({
           />
         </div>
       </div>
-      <button className="text-red-600" onClick={handleDeleteFilter}>
+      <button className="text-red-600" onClick={handleRemoveFilter}>
         <BsTrashFill />
       </button>
     </div>

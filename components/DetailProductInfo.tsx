@@ -6,6 +6,7 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import SelectSize from "./SelectSize";
 import Alert from "./Alert";
+import { allSize, kidsSize } from "@/public/constat";
 
 const DetailProductInfo = ({ product }: { product: ProductType }) => {
   const [size, setSize] = useState<number>(0);
@@ -140,6 +141,8 @@ const DetailProductInfo = ({ product }: { product: ProductType }) => {
       setIsLoading(false);
     }
   };
+  console.log(product.category.includes("Kids"));
+  console.log(product.category);
 
   return (
     <div className="w-full">
@@ -153,7 +156,21 @@ const DetailProductInfo = ({ product }: { product: ProductType }) => {
         Country/Region of Origin: {product.origin}
       </p>
 
-      <SelectSize size={size} setSize={setSize} error={errorSize} />
+      {product.category.includes("Kids") ? (
+        <SelectSize
+          size={size}
+          setSize={setSize}
+          error={errorSize}
+          sizeOptions={kidsSize}
+        />
+      ) : (
+        <SelectSize
+          size={size}
+          setSize={setSize}
+          error={errorSize}
+          sizeOptions={allSize}
+        />
+      )}
 
       <button
         disabled={isLoading}

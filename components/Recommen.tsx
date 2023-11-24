@@ -30,11 +30,14 @@ const Recommen = ({ products }: { products: any }) => {
       >
         <SwiperButton />
         <div>
-          {products.slice(0, 10).map((product: ProductType) => (
-            <SwiperSlide key={product._id}>
-              <CardProduct product={product} />
-            </SwiperSlide>
-          ))}
+          {products
+            .sort(() => Math.random() - 0.5)
+            .slice(0, 10)
+            .map((product: ProductType) => (
+              <SwiperSlide key={product._id}>
+                <CardProduct product={product} />
+              </SwiperSlide>
+            ))}
         </div>
       </Swiper>
     </div>

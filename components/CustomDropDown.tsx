@@ -12,7 +12,7 @@ const CustomDropDown = ({ options, selected, setSelected }: Props) => {
     <div className="w-max md:mr-3 mb-3 md:mb-0">
       <Listbox value={selected} onChange={(e: string) => setSelected(e)}>
         <div className={`relative w-max `}>
-          <Listbox.Button className="relative w-full min-w-[127px] flex justify-between items-center cursor-pointer rounded-sm bg-white sm:py-2 sm:px-3 py-1 px-2 text-left shadow-md sm:text-sm border">
+          <Listbox.Button className="relative w-full  flex justify-between items-center cursor-pointer rounded-sm bg-white sm:py-2 sm:px-3 py-1 px-2 text-left shadow-md sm:text-sm border">
             <span className="block truncate text-xs sm:text-sm">
               {selected}
             </span>

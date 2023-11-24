@@ -1,43 +1,36 @@
-import React, { Dispatch, SetStateAction } from "react";
+import React, { Dispatch, MouseEventHandler, SetStateAction } from "react";
 import CustomDropDown from "./CustomDropDown";
 import { nameParam } from "@/public/constat";
 import { BsTrashFill } from "react-icons/bs";
 import { FilterGroup, FilterItem } from "@/types";
 
 type Props = {
-  groupOprator: string;
   index: number;
   indexGroup: number;
   selected: string;
   value: string;
   operator: string;
   setFilterValue: Dispatch<SetStateAction<FilterGroup[]>>;
+  handleRemoveFilter: MouseEventHandler<HTMLButtonElement>;
 };
 
 const NameFilter = ({
-  groupOprator,
   operator,
   index,
   indexGroup,
   setFilterValue,
   selected,
   value,
+  handleRemoveFilter,
 }: Props) => {
-  const handleSetSelected = (e: string) => {
+  const handleSetSelected = (e: string, type: string) => {
     setFilterValue((prevFilterValue: FilterGroup[]) => {
       const updatedFilterValue = [...prevFilterValue];
-      updatedFilterValue[indexGroup][index].param = e;
-      return updatedFilterValue;
-    });
-  };
-
-  const handleRemoveFilter = () => {
-    setFilterValue((prevFilterValue: FilterGroup[]) => {
-      const updatedFilterValue = prevFilterValue.map((group: any, i: number) =>
-        i === indexGroup
-          ? group.filter((item: FilterItem, j: number) => j !== index)
-          : group
-      );
+      if (type == "operator") {
+        updatedFilterValue[indexGroup][index].operator = e;
+      } else if (type == "param") {
+        updatedFilterValue[indexGroup][index].param = e;
+      }
       return updatedFilterValue;
     });
   };
@@ -50,7 +43,6 @@ const NameFilter = ({
     });
   };
 
-
   return (
     <div
       className={`flex w-full justify-between items-center mb-3 p-1 border rounded-md md:border-none`}
@@ -58,24 +50,21 @@ const NameFilter = ({
       <div className="flex md:items-center items-start justify-start flex-col md:flex-row">
         <div className="md:mr-3 mb-3 md:mb-0 md:text-base text-xs flex items-center">
           <p className="mr-3 text-slate-500">
-            {indexGroup > 0
-              ? operator == " && " && index > 1
-                ? "AND"
-                : operator == " || " && index > 1
-                ? "OR"
-                : null
-              : operator == " && " && index > 0
-              ? "AND"
-              : operator == " || " && index > 0
-              ? "OR"
-              : null}
+            {(operator !== "" && index > 0 && indexGroup === 0) ||
+            (operator !== "" && index > 1 && indexGroup !== 0) ? (
+              <CustomDropDown
+                options={["AND", "OR"]}
+                selected={operator}
+                setSelected={(e: string) => handleSetSelected(e, "operator")}
+              />
+            ) : null}
           </p>
           <p className="font-medium"> Name : </p>
         </div>
         <CustomDropDown
           options={nameParam}
           selected={selected}
-          setSelected={handleSetSelected}
+          setSelected={(e: string) => handleSetSelected(e, "param")}
         />
         <input
           onChange={(e) => handleChangeName(e.target.value)}

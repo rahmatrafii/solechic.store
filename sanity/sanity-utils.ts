@@ -8,39 +8,50 @@ export const client = createClient({
 });
 
 export async function getProducts(type: string = "all") {
-  let query2 = `*[_type == "product" ${
-    type == "women"
-      ? `&& category match "women*"`
-      : type == "men"
-      ? `&& category match "men*"`
-      : type == "kids"
-      ? `&& category match "kids*"`
-      : ""
-  } ]`;
+  try {
+    let query2 = `*[_type == "product" ${
+      type == "women"
+        ? `&& category match "women*"`
+        : type == "men"
+        ? `&& category match "men*"`
+        : type == "kids"
+        ? `&& category match "kids*"`
+        : ""
+    } ]`;
 
-  return client.fetch(query2 as string);
+    return client.fetch(query2 as string);
+  } catch (error) {
+    console.log(error);
+  }
 }
-// export async function getProducts(type: string = "all") {
-//   let query2 = `*[_type == "product" && name match "air" || rating >= 4.1]`;
-
-//   return client.fetch(query2 as string);
-// }
 
 export async function getProductsGroupFiltered(query: string) {
-  const query2 = `*[${query}]`;
-  const res = await client.fetch(query2);
-  return res;
+  try {
+    const query2 = `*[${query}]`;
+    const res = await client.fetch(query2);
+    return res;
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 export async function getProductsFiltered(query: string) {
-  const query2 = `*[_type == "product" && ${query}]`;
-  const res = await client.fetch(query2);
-  return res;
+  try {
+    const query2 = `*[_type == "product" && ${query}]`;
+    const res = await client.fetch(query2);
+    return res;
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 export async function getProduct(slug: string) {
-  const query = `*[_type == "product" && slug.current == '${slug}'][0]`;
-  return client.fetch(query);
+  try {
+    const query = `*[_type == "product" && slug.current == '${slug}'][0]`;
+    return client.fetch(query);
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 const builder = imageUrlBuilder(client);
